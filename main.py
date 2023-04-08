@@ -33,10 +33,12 @@ def create_sematosema_binary_dataframe():
 
     dataframe = pandas.DataFrame([[0]*len(sematosema_results)], columns=dataframe_columns)
 
-    for record in sematosema_results:
-        print(record)
+    for record in sinais_results:
+        signal: str = record[0].replace('*OK', '').strip() # cutting the *OK ending from the signal
+        dataframe.loc[len(dataframe)] = [1 if x in signal else 0 for x in dataframe_columns]
+        print(signal)
 
-    # dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
+    dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
     print(dataframe)
 
     # exporting the dataframe to csv and excel
@@ -44,5 +46,5 @@ def create_sematosema_binary_dataframe():
     dataframe.to_excel(r'buscasigno-sematosema-binarydata.xlsx', index=False)
 
 if __name__ == '__main__':
-    # create_aloquiros_binary_dataframe()
+    create_aloquiros_binary_dataframe()
     create_sematosema_binary_dataframe()
