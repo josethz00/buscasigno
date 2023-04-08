@@ -5,3 +5,4 @@ cursor = conn.cursor()
 
 # lendo os dados
 res = cursor.execute('SELECT * FROM "SINAIS";').fetchall()
+print(res)
