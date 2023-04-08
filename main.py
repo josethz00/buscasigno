@@ -5,6 +5,8 @@ cursor = conn.cursor()
 
 # lendo os dados
 aloquiro_results: list[tuple] = cursor.execute('SELECT "ABREVIATURA" FROM "ALOQUIRO";').fetchall()
+sinais_results: list[tuple] = cursor.execute('SELECT "MOVIMENTOS" FROM "SINAIS";').fetchall()
+
 dataframe = pandas.DataFrame([[0]*501], columns=[record[0] for record in aloquiro_results])
 
 print(dataframe)
