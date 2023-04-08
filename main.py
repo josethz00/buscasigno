@@ -20,5 +20,5 @@ dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
 print(dataframe)
 
 # exporting the dataframe to csv and excel
-dataframe.to_csv(r'buscasigno.csv', index=False)
+dataframe.to_csv(r'buscasigno.csv', index=True, header=True)
 dataframe.to_excel(r'buscasigno.xlsx', index=False)
