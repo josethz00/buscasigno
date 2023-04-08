@@ -16,4 +16,5 @@ for record in sinais_results:
     dataframe.loc[len(dataframe)] = [1 if x in signal else 0 for x in dataframe_columns]
     print(signal)
 
+dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
 print(dataframe)
