@@ -71,6 +71,6 @@ def create_categoria_binary_dataframe(sinais_results_: list[tuple]):
     dataframe.to_csv(r'buscasigno-categoria-binarydata.csv', index=True, header=True)
 
 if __name__ == '__main__':
-    # create_aloquiros_binary_dataframe(sinais_results)
+    create_aloquiros_binary_dataframe(sinais_results)
     create_sematosema_binary_dataframe(sinais_results)
     create_categoria_binary_dataframe(sinais_results)
