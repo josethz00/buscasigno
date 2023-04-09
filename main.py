@@ -18,7 +18,6 @@ def create_aloquiros_binary_dataframe():
         print(signal)
 
     dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
-    print(dataframe)
 
     # exporting the dataframe to csv and excel
     dataframe.to_csv(r'buscasigno-aloquiros-binarydata.csv', index=True, header=True)
@@ -39,7 +38,6 @@ def create_sematosema_binary_dataframe():
         print(signal)
 
     dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
-    print(dataframe)
 
     # exporting the dataframe to csv and excel
     dataframe.to_csv(r'buscasigno-sematosema-binarydata.csv', index=True, header=True)
@@ -75,7 +73,6 @@ def create_categoria_binary_dataframe():
         print(signal)
 
     dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
-    print(dataframe)
 
     # exporting the dataframe to csv and excel
     dataframe.to_csv(r'buscasigno-categoria-binarydata.csv', index=True, header=True)
