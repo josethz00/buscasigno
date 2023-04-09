@@ -78,8 +78,8 @@ def create_categoria_binary_dataframe():
     print(dataframe)
 
     # exporting the dataframe to csv and excel
-    dataframe.to_csv(r'buscasigno-sematosema-binarydata.csv', index=True, header=True)
-    dataframe.to_excel(r'buscasigno-sematosema-binarydata.xlsx', index=False)
+    dataframe.to_csv(r'buscasigno-categoria-binarydata.csv', index=True, header=True)
+    dataframe.to_excel(r'buscasigno-categoria-binarydata.xlsx', index=False)
 
 if __name__ == '__main__':
     create_aloquiros_binary_dataframe()
