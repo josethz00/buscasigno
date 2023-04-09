@@ -54,22 +54,18 @@ def create_categoria_binary_dataframe():
 
     for record in sinais_results:
         signal: str = record[0].replace('*OK', '').strip() # cutting the *OK ending from the signal
-        match signal.split():
-            # AMD, AME, OPD, OPF, OMD, OME, RM - Mãos
-            case [*_, "AMD"] | [*_, "AME"] | [*_, "OPD"] | [*_, "OPF"] | [*_, "OMD"] | [*_, "OME"] | [*_, "RM"]:
-                dataframe.loc[len(dataframe)] = [1 if x == "Mãos" else 0 for x in dataframe_columns]
-            # QDD, QDE, ADD, ADE - Dedos
-            case [*_, "QDD"] | [*_, "QDE"] | [*_, "ADD"] | [*_, "ADE"]:
-                dataframe.loc[len(dataframe)] = [1 if x == "Dedos" else 0 for x in dataframe_columns]
-            # CP, RF, TA, PB - Local da Articulação
-            case [*_, "CP"] | [*_, "RF"] | [*_, "TA"] | [*_, "PB"]:
-                dataframe.loc[len(dataframe)] = [1 if x == "Local da Articulação" else 0 for x in dataframe_columns]
-            # MMD, MME, TMD, TME, MDD, MDE, FI, MC - Movimento
-            case [*_, "MMD"] | [*_, "MME"] | [*_, "TMD"] | [*_, "TME"] | [*_, "MDD"] | [*_, "MDE"] | [*_, "FI"] | [*_, "MC"]:
-                dataframe.loc[len(dataframe)] = [1 if x == "Movimento" else 0 for x in dataframe_columns]
-            # SSP, SSN, EMF - Expressão Facial
-            case [*_, "SSP"] | [*_, "SSN"] | [*_, "EMF"]:
-                dataframe.loc[len(dataframe)] = [1 if x == "Expressão Facial" else 0 for x in dataframe_columns]
+
+        if any(sematosema in signal for sematosema in ["AMD", "AME", "OPD", "OPF", "OMD", "OME", "RM"]):
+            dataframe.loc[len(dataframe.index)] = [1 if x == "Mãos" else 0 for x in dataframe_columns]
+        elif any(sematosema in signal for sematosema in ["QDD", "QDE", "ADD", "ADE"]):
+            dataframe.loc[len(dataframe.index)] = [1 if x == "Dedos" else 0 for x in dataframe_columns]
+        elif any(sematosema in signal for sematosema in ["MMD", "MME", "TMD", "TME", "MDD", "MDE", "FI", "MC"]):
+            dataframe.loc[len(dataframe.index)] = [1 if x == "Movimento" else 0 for x in dataframe_columns]
+        elif any(sematosema in signal for sematosema in ["CP", "RF", "TA", "PB"]):
+            dataframe.loc[len(dataframe.index)] = [1 if x == "Local da Articulação" else 0 for x in dataframe_columns]
+        elif any(sematosema in signal for sematosema in ["SSP", "SSN", "EMF"]):
+            dataframe.loc[len(dataframe.index)] = [1 if x == "Expressão Facial" else 0 for x in dataframe_columns]
+            
         print(signal)
 
     dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
@@ -79,6 +75,6 @@ def create_categoria_binary_dataframe():
     dataframe.to_excel(r'buscasigno-categoria-binarydata.xlsx', index=False)
 
 if __name__ == '__main__':
-    create_aloquiros_binary_dataframe()
-    create_sematosema_binary_dataframe()
+    #create_aloquiros_binary_dataframe()
+    #create_sematosema_binary_dataframe()
     create_categoria_binary_dataframe()
