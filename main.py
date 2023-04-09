@@ -84,3 +84,4 @@ def create_categoria_binary_dataframe():
 if __name__ == '__main__':
     create_aloquiros_binary_dataframe()
     create_sematosema_binary_dataframe()
+    create_categoria_binary_dataframe()
