@@ -4,7 +4,7 @@ import os
 conn = sqlite3.connect('buscasigno.db')
 cursor = conn.cursor()
 
-sinais_results: list[tuple] = cursor.execute('SELECT "MOVIMENTOS", "NOME" FROM "SINAIS" LIMIT 200;').fetchall()
+sinais_results: list[tuple] = cursor.execute('SELECT "MOVIMENTOS", "NOME" FROM "SINAIS" LIMIT;').fetchall()
 
 def create_aloquiros_binary_dataframe(sinais_results_: list[tuple]):
     if os.path.exists('buscasigno-aloquiros-binarydata.csv'):
