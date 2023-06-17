@@ -65,63 +65,35 @@ def create_categoria_binary_dataframe(sinais_results_: list[tuple]):
     for record in sinais_results_:
         signal: str = record[0].replace('*OK', '').strip() # cutting the *OK ending from the signal
 
+        dataframe.loc[len(dataframe.index)] = [0] * len(categoria_results)
+
         if any(sematosema in signal for sematosema in ["AMD", "AME", "OPD", "OPF", "OMD", "OME", "RM"]):
             for x in dataframe_columns:
+                
                 if x == "Mão":
                     dataframe.loc[len(dataframe.index)] = 1
-                else:
-                    # se ja tiver um 1 na linha, não precisa adicionar mais
-                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
-                        continue
-                    else:
-                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["QDD", "QDE", "ADD", "ADE"]):
             for x in dataframe_columns:
                 if x == "Dedos":
                     dataframe.loc[len(dataframe.index)] = 1
-                else:
-                    # se ja tiver um 1 na linha, não precisa adicionar mais
-                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
-                        continue
-                    else:
-                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["MMD", "MME", "TMD", "TME", "MDD", "MDE", "FI", "MC"]):
             for x in dataframe_columns:
                 if x == "Movimento":
                     dataframe.loc[len(dataframe.index)] = 1
-                else:
-                    # se ja tiver um 1 na linha, não precisa adicionar mais
-                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
-                        continue
-                    else:
-                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["CP", "RF", "TA", "PB"]):
             for x in dataframe_columns:
                 if x == "Local da Articulação":
                     dataframe.loc[len(dataframe.index)] = 1
-                else:
-                    # se ja tiver um 1 na linha, não precisa adicionar mais
-                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
-                        continue
-                    else:
-                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["SSP", "SSN", "EMF"]):
             for x in dataframe_columns:
                 if x == "Expressão Facial":
                     dataframe.loc[len(dataframe.index)] = 1
-                else:
-                    # se ja tiver um 1 na linha, não precisa adicionar mais
-                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
-                        continue
-                    else:
-                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
 
     dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
 
     # exporting the dataframe to csv and excel
     dataframe.to_csv(r'buscasigno-categoria-binarydata.csv', index=True, header=True)
 
-# TODO: create datasets counting the number of times each sematosema appears in each signal
 def create_sematosema_occurrences_dataframe(sinais_results_: list[tuple]):
     if os.path.exists('buscasigno-sematosema-occurrences.csv'):
         print('buscasigno-sematosema-occurrences.csv already exists')
@@ -151,9 +123,47 @@ def create_sematosema_occurrences_dataframe(sinais_results_: list[tuple]):
 
 # TODO: create datasets counting the number of times each aloquiro appears in each signal
 # TODO: create datasets counting the number of times each categoria appears in each signal
+def create_categoria_occurrences_dataframe(sinais_results_: list[tuple]):
+    if os.path.exists('buscasigno-categoria-occurrences.csv'):
+        print('buscasigno-categoria-occurrences.csv already exists')
+        return
+
+    # lendo os dados
+    categoria_results: list[tuple] = cursor.execute('SELECT "NOME" FROM "CATEGORIA";').fetchall()
+
+    dataframe_columns = [record[0] for record in categoria_results]
+    dataframe_columns_dict = {record[0]: 0 for record in categoria_results}
+
+    print(dataframe_columns_dict)
+
+    for record in sinais_results_:
+        signal: str = record[0].replace('*OK', '').strip() # cutting the *OK ending from the signal
+        signal_array = signal.split(' ')
+
+        for aloquiro in signal_array:
+            sematosema = ''.join(i for i in aloquiro if not i.isdigit())
+            if sematosema in ["AMD", "AME", "OPD", "OPF", "OMD", "OME", "RM"]:
+                dataframe_columns_dict["Mãos"] += 1
+            if sematosema in ["QDD", "QDE", "ADD", "ADE"]:
+                dataframe_columns_dict["Dedos"] += 1
+            if sematosema in ["MMD", "MME", "TMD", "TME", "MDD", "MDE", "FI", "MC"]:
+                dataframe_columns_dict["Movimento"] += 1
+            if sematosema in ["CP", "RF", "TA", "PB"]:
+                dataframe_columns_dict["Local da Articulação"] += 1
+            if sematosema in ["SSP", "SSN", "EMF"]:
+                dataframe_columns_dict["Expressão Facial"] += 1
+            
+    print(list(dataframe_columns_dict.values()))
+    
+    dataframe = pandas.DataFrame(columns=dataframe_columns)
+    dataframe.loc[len(dataframe)] = list(dataframe_columns_dict.values())
+    # exporting the dataframe to csv and excel
+    dataframe.to_csv(r'buscasigno-categoria-occurrences.csv', index=False, header=True)
+
 
 if __name__ == '__main__':
     create_aloquiros_binary_dataframe(sinais_results)
     create_sematosema_binary_dataframe(sinais_results)
     create_categoria_binary_dataframe(sinais_results)
     create_sematosema_occurrences_dataframe(sinais_results)
+    create_categoria_occurrences_dataframe(sinais_results)
