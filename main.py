@@ -1,4 +1,5 @@
 import sqlite3, pandas
+import os
 
 conn = sqlite3.connect('buscasigno.db')
 cursor = conn.cursor()
@@ -6,6 +7,10 @@ cursor = conn.cursor()
 sinais_results: list[tuple] = cursor.execute('SELECT "MOVIMENTOS" FROM "SINAIS";').fetchall()
 
 def create_aloquiros_binary_dataframe(sinais_results_: list[tuple]):
+    if os.path.exists('buscasigno-aloquiros-binarydata.csv'):
+        print('buscasigno-aloquiros-binarydata.csv already exists')
+        return
+    
     # lendo os dados
     aloquiro_results: list[tuple] = cursor.execute('SELECT "ABREVIATURA" FROM "ALOQUIRO";').fetchall()
 
@@ -24,6 +29,10 @@ def create_aloquiros_binary_dataframe(sinais_results_: list[tuple]):
     dataframe.to_csv(r'buscasigno-aloquiros-binarydata.csv', index=True, header=True)
 
 def create_sematosema_binary_dataframe(sinais_results_: list[tuple]):
+    if os.path.exists('buscasigno-sematosema-binarydata.csv'):
+        print('buscasigno-sematosema-binarydata.csv already exists')
+        return
+
     # lendo os dados
     sematosema_results: list[tuple] = cursor.execute('SELECT "ABREVIATURA" FROM "SEMATOSEMA";').fetchall()
 
@@ -42,6 +51,10 @@ def create_sematosema_binary_dataframe(sinais_results_: list[tuple]):
     dataframe.to_csv(r'buscasigno-sematosema-binarydata.csv', index=True, header=True)
 
 def create_categoria_binary_dataframe(sinais_results_: list[tuple]):
+    if os.path.exists('buscasigno-categoria-binarydata.csv'):
+        print('buscasigno-categoria-binarydata.csv already exists')
+        return
+
     # lendo os dados
     categoria_results: list[tuple] = cursor.execute('SELECT "NOME" FROM "CATEGORIA";').fetchall()
 
