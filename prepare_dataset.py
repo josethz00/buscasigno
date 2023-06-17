@@ -66,24 +66,94 @@ def create_categoria_binary_dataframe(sinais_results_: list[tuple]):
         signal: str = record[0].replace('*OK', '').strip() # cutting the *OK ending from the signal
 
         if any(sematosema in signal for sematosema in ["AMD", "AME", "OPD", "OPF", "OMD", "OME", "RM"]):
-            dataframe.loc[len(dataframe.index)] = [1 if x == "Mãos" else 0 for x in dataframe_columns]
+            for x in dataframe_columns:
+                if x == "Mão":
+                    dataframe.loc[len(dataframe.index)] = 1
+                else:
+                    # se ja tiver um 1 na linha, não precisa adicionar mais
+                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
+                        continue
+                    else:
+                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["QDD", "QDE", "ADD", "ADE"]):
-            dataframe.loc[len(dataframe.index)] = [1 if x == "Dedos" else 0 for x in dataframe_columns]
+            for x in dataframe_columns:
+                if x == "Dedos":
+                    dataframe.loc[len(dataframe.index)] = 1
+                else:
+                    # se ja tiver um 1 na linha, não precisa adicionar mais
+                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
+                        continue
+                    else:
+                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["MMD", "MME", "TMD", "TME", "MDD", "MDE", "FI", "MC"]):
-            dataframe.loc[len(dataframe.index)] = [1 if x == "Movimento" else 0 for x in dataframe_columns]
+            for x in dataframe_columns:
+                if x == "Movimento":
+                    dataframe.loc[len(dataframe.index)] = 1
+                else:
+                    # se ja tiver um 1 na linha, não precisa adicionar mais
+                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
+                        continue
+                    else:
+                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["CP", "RF", "TA", "PB"]):
-            dataframe.loc[len(dataframe.index)] = [1 if x == "Local da Articulação" else 0 for x in dataframe_columns]
+            for x in dataframe_columns:
+                if x == "Local da Articulação":
+                    dataframe.loc[len(dataframe.index)] = 1
+                else:
+                    # se ja tiver um 1 na linha, não precisa adicionar mais
+                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
+                        continue
+                    else:
+                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
         if any(sematosema in signal for sematosema in ["SSP", "SSN", "EMF"]):
-            dataframe.loc[len(dataframe.index)] = [1 if x == "Expressão Facial" else 0 for x in dataframe_columns]
-            
-        print(signal)
+            for x in dataframe_columns:
+                if x == "Expressão Facial":
+                    dataframe.loc[len(dataframe.index)] = 1
+                else:
+                    # se ja tiver um 1 na linha, não precisa adicionar mais
+                    if dataframe.loc[len(dataframe.index) - 1][x] == 1:
+                        continue
+                    else:
+                        dataframe.loc[len(dataframe.index)] = [0 for x in dataframe_columns]
 
     dataframe = dataframe.tail(-1) # removing the first row, which is all zeros
 
     # exporting the dataframe to csv and excel
     dataframe.to_csv(r'buscasigno-categoria-binarydata.csv', index=True, header=True)
 
+# TODO: create datasets counting the number of times each sematosema appears in each signal
+def create_sematosema_occurrences_dataframe(sinais_results_: list[tuple]):
+    if os.path.exists('buscasigno-sematosema-occurrences.csv'):
+        print('buscasigno-sematosema-occurrences.csv already exists')
+        return
+
+    # lendo os dados
+    sematosema_results: list[tuple] = cursor.execute('SELECT "ABREVIATURA" FROM "SEMATOSEMA";').fetchall()
+
+    dataframe_columns = [record[0] for record in sematosema_results]
+    dataframe_columns_dict = {record[0]: 0 for record in sematosema_results}
+
+    for record in sinais_results_:
+        signal: str = record[0].replace('*OK', '').strip() # cutting the *OK ending from the signal
+        signal_array = signal.split(' ')
+
+        for sematosema in dataframe_columns:
+            for signal_ in signal_array:
+                if sematosema in signal_:
+                    dataframe_columns_dict[sematosema] += 1
+            
+    print(list(dataframe_columns_dict.values()))
+    
+    dataframe = pandas.DataFrame(columns=dataframe_columns)
+    dataframe.loc[len(dataframe)] = list(dataframe_columns_dict.values())
+    # exporting the dataframe to csv and excel
+    dataframe.to_csv(r'buscasigno-sematosema-occurrences.csv', index=False, header=True)
+
+# TODO: create datasets counting the number of times each aloquiro appears in each signal
+# TODO: create datasets counting the number of times each categoria appears in each signal
+
 if __name__ == '__main__':
     create_aloquiros_binary_dataframe(sinais_results)
     create_sematosema_binary_dataframe(sinais_results)
     create_categoria_binary_dataframe(sinais_results)
+    create_sematosema_occurrences_dataframe(sinais_results)
