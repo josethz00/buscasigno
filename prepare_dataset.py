@@ -67,13 +67,13 @@ def create_categoria_binary_dataframe(sinais_results_: list[tuple]):
 
         if any(sematosema in signal for sematosema in ["AMD", "AME", "OPD", "OPF", "OMD", "OME", "RM"]):
             dataframe.loc[len(dataframe.index)] = [1 if x == "Mãos" else 0 for x in dataframe_columns]
-        elif any(sematosema in signal for sematosema in ["QDD", "QDE", "ADD", "ADE"]):
+        if any(sematosema in signal for sematosema in ["QDD", "QDE", "ADD", "ADE"]):
             dataframe.loc[len(dataframe.index)] = [1 if x == "Dedos" else 0 for x in dataframe_columns]
-        elif any(sematosema in signal for sematosema in ["MMD", "MME", "TMD", "TME", "MDD", "MDE", "FI", "MC"]):
+        if any(sematosema in signal for sematosema in ["MMD", "MME", "TMD", "TME", "MDD", "MDE", "FI", "MC"]):
             dataframe.loc[len(dataframe.index)] = [1 if x == "Movimento" else 0 for x in dataframe_columns]
-        elif any(sematosema in signal for sematosema in ["CP", "RF", "TA", "PB"]):
+        if any(sematosema in signal for sematosema in ["CP", "RF", "TA", "PB"]):
             dataframe.loc[len(dataframe.index)] = [1 if x == "Local da Articulação" else 0 for x in dataframe_columns]
-        elif any(sematosema in signal for sematosema in ["SSP", "SSN", "EMF"]):
+        if any(sematosema in signal for sematosema in ["SSP", "SSN", "EMF"]):
             dataframe.loc[len(dataframe.index)] = [1 if x == "Expressão Facial" else 0 for x in dataframe_columns]
             
         print(signal)
